@@ -1,11 +1,12 @@
 version: '3'
 services:
   web:
-    image: ghcr.io/demathias/evecorpchecker
+    build: .
     restart: unless-stopped
+    ports:
+      - "80:80"
     networks:
       - evocorpchecker-internal
-      - shared
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=shared"
@@ -16,11 +17,9 @@ services:
       - "traefik.http.routers.cc-secure.entrypoints=websecure"
       - "traefik.http.routers.cc-secure.tls=true"
       - "traefik.http.routers.cc-secure.tls.certresolver=primary"
-
+  
   db:
     image: mariadb:10.5
-    volumes:
-      - /docker/evecorpchecker/data/db:/var/lib/mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password # change this with a secure password
@@ -31,5 +30,7 @@ services:
       - evocorpchecker-internal
 
 networks:
-  shared:
-    external: true
+  evocorpchecker-internal:
+
+volumes:
+  db_data:
