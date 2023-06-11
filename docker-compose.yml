@@ -4,6 +4,16 @@ services:
     image: ghcr.io/demathias/evecorpchecker
     networks:
       - shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=shared"
+      - "traefik.http.services.cc.loadbalancer.server.port=80"
+      - "traefik.http.routers.cc.rule=Host(`cc.ca-corp.org`)"
+      - "traefik.http.routers.cc.entrypoints=web"
+      - "traefik.http.routers.cc-secure.rule=Host(`cc.ca-corp.org`)"
+      - "traefik.http.routers.cc-secure.entrypoints=websecure"
+      - "traefik.http.routers.cc-secure.tls=true"
+      - "traefik.http.routers.cc-secure.tls.certresolver=primary"
 
 networks:
   shared:
