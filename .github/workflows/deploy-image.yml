@@ -2,7 +2,7 @@ name: Publish Docker image
 on:
   push:
     branches:
-      - main
+      - test
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages
@@ -15,7 +15,7 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: demathias
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
