@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    image: ghcr.io/deMathias/EvECorpChecker
+    networks:
+      - shared
+
+networks:
+  shared:
+    external: true
