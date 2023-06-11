@@ -1,63 +1,11 @@
 <?php
-require 'vendor/autoload.php';
-use GuzzleHttp\Client;
+require 'lib.php';
 
-$client = new Client([
-    'base_uri' => 'https://esi.evetech.net/latest/',
-    'timeout'  => 2.0,
-]);
-
-$corporations = [
-    "Hedion University",
-    "Imperial Academy",
-    "Royal Amarr Institute",
-    "School of Applied Knowledge",
-    "Science and Trade Institute",
-    "State War Academy",
-    "Center for Advanced Studies",
-    "Federal Navy Academy",
-    "University of Caille",
-    "Pator Tech School",
-    "Republic Military School",
-    "Republic University",
-    "Viziam",
-    "Ministry of War",
-    "Imperial Shipment",
-    "Perkone",
-    "Caldari Provisions",
-    "Deep Core Mining Inc.",
-    "The Scope",
-    "Aliastra",
-    "Garoun Investment Bank",
-    "Brutor Tribe",
-    "Sebiestor Tribe",
-    "Native Freshfood"
-];
-
+// Handle form submission
 $matchingNames = [];
-
 if (isset($_POST['names'])) {
     $names = explode("\n", $_POST['names']);
-
-    foreach ($names as $name) {
-        $name = trim($name);
-        $response = $client->post('universe/ids/', ['json' => [$name]]);
-        $data = json_decode($response->getBody());
-
-        if (isset($data->characters[0]->id)) {
-            $characterId = $data->characters[0]->id;
-            $characterResponse = $client->get("characters/$characterId/");
-            $characterData = json_decode($characterResponse->getBody());
-
-            $corporationId = $characterData->corporation_id;
-            $corporationResponse = $client->get("corporations/$corporationId/");
-            $corporationData = json_decode($corporationResponse->getBody());
-
-            if (in_array($corporationData->name, $corporations)) {
-                $matchingNames[] = $name;
-            }
-        }
-    }
+    $matchingNames = checkCorps($names);
 }
 
 ?>
@@ -66,16 +14,36 @@ if (isset($_POST['names'])) {
 <html>
 <head>
     <title>EVE Online Characters</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <form method="post">
-        <textarea name="names" placeholder="Enter character names separated by a newline"></textarea><br>
-        <input type="submit" value="Submit">
-    </form>
-    <?php
-    if (!empty($matchingNames)) {
-        echo '<p>Matching characters: '.implode(', ', $matchingNames).'</p>';
-    }
-    ?>
+<body class="bg-dark text-white">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 text-center mt-5 mb-4">
+                <h1 class="display-4">EvE Corps Checker</h1>
+            </div>
+        </div>
+        <form method="post" class="row">
+            <div class="col-6">
+                <textarea name="names" class="form-control my-2" placeholder="Enter character names separated by a newline" rows="20"></textarea>
+            </div>
+            <div class="col-6">
+                <textarea name="output" class="form-control my-2"rows="20" readonly><?php
+                    if (!empty($matchingNames)) {
+                        echo implode("\n", $matchingNames);
+                    }
+                    if (!empty($_POST['output'])) {
+                        echo "\n--\n" . $_POST['output'];
+                    }
+                ?></textarea>
+            </div>
+            <div class="col-12">
+                <input type="submit" value="Submit" class="btn btn-success btn-lg btn-block my-2">
+            </div>
+        </form>
+    </div>
+    
 </body>
 </html>
+
