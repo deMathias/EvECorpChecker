@@ -44,3 +44,21 @@ if (isset($_POST['names'])) {
 }
 
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EVE Online Characters</title>
+</head>
+<body>
+    <form method="post">
+        <textarea name="names" placeholder="Enter character names separated by a newline"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+    <?php
+    if (!empty($matchingNames)) {
+        echo '<p>Matching characters: '.implode(', ', $matchingNames).'</p>';
+    }
+    ?>
+</body>
+</html>
