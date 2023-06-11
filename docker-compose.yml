@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: ghcr.io/deMathias/EvECorpChecker
+    image: ghcr.io/demathias/evecorpchecker
     networks:
       - shared
 
