@@ -1,3 +1,3 @@
-docker rm evecorpchecker-debug
-docker build -t evecorpchecker-debug . 
-docker run -p 80:80 --name evecorpchecker-debug evecorpchecker-debug
+docker-compose -f docker-compose.debug.yml down
+docker-compose -f docker-compose.debug.yml build
+docker-compose -f docker-compose.debug.yml up
