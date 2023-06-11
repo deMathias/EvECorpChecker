@@ -1,6 +1,11 @@
 <?php
 require 'vendor/autoload.php';
-use ccpEVE\esi\esi;
+use GuzzleHttp\Client;
+
+$client = new Client([
+    'base_uri' => 'https://esi.evetech.net/latest/',
+    'timeout'  => 2.0,
+]);
 
 $corporations = [
     "Hedion University",
@@ -30,15 +35,27 @@ $corporations = [
 ];
 
 $matchingNames = [];
+
 if (isset($_POST['names'])) {
     $names = explode("\n", $_POST['names']);
-    $esi = new esi();
+
     foreach ($names as $name) {
         $name = trim($name);
-        $character = $esi->getCharacterByName($name);
-        $corporationName = $esi->getCorporationById($character->corporation_id)->name;
-        if (in_array($corporationName, $corporations)) {
-            $matchingNames[] = $name;
+        $response = $client->post('universe/ids/', ['json' => [$name]]);
+        $data = json_decode($response->getBody());
+
+        if (isset($data->characters[0]->id)) {
+            $characterId = $data->characters[0]->id;
+            $characterResponse = $client->get("characters/$characterId/");
+            $characterData = json_decode($characterResponse->getBody());
+
+            $corporationId = $characterData->corporation_id;
+            $corporationResponse = $client->get("corporations/$corporationId/");
+            $corporationData = json_decode($corporationResponse->getBody());
+
+            if (in_array($corporationData->name, $corporations)) {
+                $matchingNames[] = $name;
+            }
         }
     }
 }

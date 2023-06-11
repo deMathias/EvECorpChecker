@@ -1,0 +1,7 @@
+{
+    "name": "demathias/evecorpchecker",
+    "description": "evecorpchecker",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    }
+}
