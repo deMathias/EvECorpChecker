@@ -22,11 +22,13 @@ services:
     volumes:
       - /docker/evecorpchecker/data/db:/var/lib/mysql
     restart: unless-stopped
+    env_file: 
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: password # change this with a secure password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
       MYSQL_DATABASE: evecorpchecker
       MYSQL_USER: evecorpchecker
-      MYSQL_PASSWORD: password # change this with a secure password
+      MYSQL_PASSWORD: ${MYSQL_PASS}
     networks:
       - evocorpchecker-internal
 
