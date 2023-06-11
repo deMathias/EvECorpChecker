@@ -14,7 +14,9 @@ function checkCorps($names) {
     $corporations = getComputerCorps();
     $matchingNames = [];
     foreach ($names as $name) {
-        $name = trim($name);
+        $name = trim($name);        
+        if (empty($name)) continue;
+
         $response = $client->post('universe/ids/', ['json' => [$name]]);
         $data = json_decode($response->getBody());
 
