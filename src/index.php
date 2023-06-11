@@ -53,7 +53,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('output').value = data.data.newMatches.join('\n') + "\n--\n" + data.data.previousMatches;
+                    document.getElementById('output').value = data.data.newMatches.join(',') + "\n--\n" + data.data.previousMatches;
                 } else {
                     alert('An error occurred: ' + data.data);
                 }

@@ -9,13 +9,15 @@ $client = new Client([
 ]);
 
 
-function checkCorps($names) {
+function checkCorps($names, $extraSkipNames = []) {
     $client = getClient();
     $corporations = getComputerCorps();
     $matchingNames = [];
+    $names = array_unique($names);
     foreach ($names as $name) {
         $name = trim($name);        
         if (empty($name)) continue;
+        if (in_array($name, $extraSkipNames)) continue;
 
         $response = $client->post('universe/ids/', ['json' => [$name]]);
         $data = json_decode($response->getBody());

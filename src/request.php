@@ -9,11 +9,12 @@
     );
 
     // Get previous matches if any
-    $previousMatches = "";
+    $previousMatchesStr = "";
+    $previousMatchesArr = [];
 
     // todo: this can be done client side now 
     if (isset($_POST['output'])) {
-        $previousMatches = $_POST['output'];
+        $previousMatchesStr = $_POST['output'];
     }
 
     // Handle form submission and response
@@ -23,11 +24,18 @@
         if (!empty($_POST['names'])) {
             $names = explode("\n", $_POST['names']);
         }
+
+        // Extact previously listed names as array
+        if (!empty($previousMatchesStr)) {
+            $previousMatchesSanitized = str_replace("\n--\n", ",", $previousMatchesStr);
+            $previousMatchesArr = explode(",", $previousMatchesSanitized);
+        }
         
+        // Prompt
         try {
             $response["data"] = [
-                "newMatches" => checkCorps($names),
-                "previousMatches" => $previousMatches,
+                "newMatches" => checkCorps($names, $previousMatchesArr),
+                "previousMatches" => $previousMatchesStr,
             ];
             $response["success"] = true;
         } catch (Exception $e) {
